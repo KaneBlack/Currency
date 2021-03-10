@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const inputUah = document.querySelector('#uah'),
         inputUsd = document.querySelector('#usd'),
-        inputEur = document.querySelector('#eur');
+        inputEur = document.querySelector('#eur'),
+        inputCad = document.querySelector('#cad'),
+        inputUsd1 = document.querySelector('#usd1'),
+        inputEur1 = document.querySelector('#eur1');
 
     function inputEvent(inputSelector) {
         inputSelector.addEventListener('input', () => {
@@ -41,4 +44,33 @@ document.addEventListener('DOMContentLoaded', function () {
     inputEvent(inputUah);
     inputEvent(inputUsd);
     inputEvent(inputEur);
+
+    
+    fetch('https://api.exchangeratesapi.io/latest')
+    .then(result => result.json())
+    .then(json => {
+        inputEventFetch(inputCad,json);
+        inputEventFetch(inputUsd1,json);
+        inputEventFetch(inputEur1,json);
+    });
+
+    function inputEventFetch(inputSelector, json) {
+        const rates = json.rates;
+        inputSelector.addEventListener('input', () => {
+            switch(inputSelector) {
+                case inputCad: 
+                    inputUsd1.value = (+inputCad.value / rates.USD).toFixed(2);
+                    inputEur1.value = (+inputCad.value / rates.CAD).toFixed(2);
+                    break;
+                case inputUsd1: 
+                    inputCad.value = (+inputUsd1.value * rates.USD).toFixed(2);
+                    inputEur1.value = (+inputCad.value / rates.CAD).toFixed(2);
+                    break;
+                case inputEur1: 
+                    inputCad.value = (+inputUsd1.value * rates.USD).toFixed(2);
+                    inputUsd1.value = (+inputCad.value / rates.USD).toFixed(2);
+                    break;
+            }
+        });
+    }
 });
