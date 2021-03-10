@@ -1,0 +1,27 @@
+body {
+    font-family: arial, sans-serif;
+    color: #333;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.form-wrap {
+    display: flex;
+}
+
+.item {
+    margin-right: 15px;
+}
+.item label {
+    display: block;
+    padding: 5px;
+}
+
+.item input {
+    width: 100px;
+    padding: 5px;
+}
