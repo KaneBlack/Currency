@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('hello');
     const inputUah = document.querySelector('#uah'),
         inputUsd = document.querySelector('#usd'),
         inputEur = document.querySelector('#eur');
@@ -8,28 +7,38 @@ document.addEventListener('DOMContentLoaded', function () {
         inputSelector.addEventListener('input', () => {
             const request = new XMLHttpRequest();
 
-            request.open('GET', 'https://api.exchangeratesapi.io/latest');
+            request.open('GET', './db.json');
             request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             request.send();
 
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState === 4 && request.status === 200) {
-                    console.log(request.response);
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    const data = JSON.parse(request.response);
+
+                    switch(inputSelector) {
+                        case inputUah: 
+                            inputUsd.value = (+inputUah.value / data.current.usd).toFixed(2);
+                            inputEur.value = (+inputUah.value / data.current.eur).toFixed(2);
+                            break;
+                        case inputUsd: 
+                            inputUah.value = (+inputUsd.value * data.current.usd).toFixed(2);
+                            inputEur.value = (+inputUah.value / data.current.eur).toFixed(2);
+                            break;
+                        case inputEur: 
+                            inputUah.value = (+inputEur.value * data.current.eur).toFixed(2);
+                            inputUsd.value = (+inputUah.value / data.current.usd).toFixed(2);
+                            break;
+                    }
+
+                } else {
+                    inputSelector.value = 'something wrong';
                 }
             });
-
             
         });
     }
 
     inputEvent(inputUah);
+    inputEvent(inputUsd);
+    inputEvent(inputEur);
 });
-
-// create const inputs
-// create event input
-// add XMLHttpRequest
-// request open (method, url)
-// 
-// 
-// 
-// 
